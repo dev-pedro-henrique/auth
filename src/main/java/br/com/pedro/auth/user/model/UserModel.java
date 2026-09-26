@@ -42,6 +42,12 @@ public class UserModel implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    public UserModel(String username, String encryptedPassword, UserRole role) {
+        this.username = username;
+        this.password = encryptedPassword;
+        this.role = role;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN) {
