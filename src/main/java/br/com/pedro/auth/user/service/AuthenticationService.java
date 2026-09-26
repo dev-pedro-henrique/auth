@@ -2,6 +2,7 @@ package br.com.pedro.auth.user.service;
 
 import br.com.pedro.auth.user.dto.in.LoginDTO;
 import br.com.pedro.auth.user.dto.in.RegisterDTO;
+import br.com.pedro.auth.user.exception.ExistsByUsernameException;
 import br.com.pedro.auth.user.model.UserModel;
 import br.com.pedro.auth.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -43,7 +44,7 @@ public class AuthenticationService {
         log.info("[AuthenticationService] - Verificando se o username {} já existe no banco de dados.", username);
         if (userRepository.existsByUsername(username)) {
             log.error("[AuthenticationService] - Username {} já existe no banco de dados.", username);
-            throw new RuntimeException("Username já existe.");
+            throw new ExistsByUsernameException("Username já existe.");
         }
         log.info("[AuthenticationService] - Username {} não existe no banco de dados.", username);
     }
