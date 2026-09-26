@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -29,9 +31,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginDTO loginDTO) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginDTO loginDTO) {
         log.info("[AuthenticationController] Requisição recebida para login de usuário: {}", loginDTO.username());
-        authenticationService.login(loginDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        String token = authenticationService.login(loginDTO);
+        return new ResponseEntity<>(Map.of("token", token), HttpStatus.OK);
     }
 }

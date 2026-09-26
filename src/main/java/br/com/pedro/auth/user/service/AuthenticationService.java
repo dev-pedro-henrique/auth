@@ -13,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,6 +22,7 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authManager;
+    private final TokenService tokenService;
 
     @Transactional
     public void register(RegisterDTO registerDTO) {
@@ -33,11 +36,13 @@ public class AuthenticationService {
         log.info("[AuthenticationService] - '{}' registrado com sucesso com id '{}'.", savedUser.getUsername(), savedUser.getId());
     }
 
-    public void login(LoginDTO loginDTO) {
+    public String login(LoginDTO loginDTO) {
         log.info("[AuthenticationService] - Iniciando processo de login do usuário: {}", loginDTO.username());
 
         var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password());
         var authentication = authManager.authenticate(usernamePasswordAuthenticationToken);
+
+        return tokenService.generateToken((UserModel) Objects.requireNonNull(authentication.getPrincipal()));
     }
 
     private void existsByUsername(String username) {
